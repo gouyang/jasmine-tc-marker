@@ -1,6 +1,9 @@
 # jasmine-tc-marker
 
-Tool for processing Jasmine XML test report.
+Tool for processing Jasmine XML test report. The script takes an Jasmine XML report and adds property tags for 
+test cases which have an ID(PROJECT-IDENTIFIER) label in their name.
+
+
 
 __Dependencies__
 
@@ -46,16 +49,19 @@ Options:
   --report-path TEXT          path to the XML file with tests report
                               [required]
 
+  --polarion-project TEXT     Polarion project indentifier  [default: CNV]
   --custom-plannedin TEXT     planned in attribute used for polarion-custom-
-                              plannedin. Example: 2_3  [required]
+                              plannedin.  [default: 2_3]
 
-  --tier [tier1|tier2|tier3]  tier of the test run  [required]
-  --env-storage TEXT          storage class used for the test run  [required]
+  --tier [tier1|tier2|tier3]  tier of the test run  [default: tier1]
+  --env-storage TEXT          storage class used for the test run  [default:
+                              nfs]
+
   --env-os TEXT               OS used on cluster nodes  [default: RHCOS]
-  --dry-run [True|False]      use True for dry run  [default: False]
+  --dry-run [True|False]      use True for dry run, False by default
+                              [default: False]
 
   --help                      Show this message and exit.
-
 ```
 
 
