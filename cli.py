@@ -1,5 +1,6 @@
 from os import path
 import re
+import yaml
 
 import click
 from lxml import etree
@@ -11,6 +12,11 @@ class Element:
         self.attributes = attributes
 
 
+def check_config(config):
+    if 'project' not in config:
+        raise Exception('project must be defined in config file')
+
+
 def add_children(parent, children):
     added_children = []
     for child in children:
@@ -18,30 +24,14 @@ def add_children(parent, children):
     return added_children
 
 
-def add_testsuites_properties(xml, project_id, plannedin, tier, env_storage, env_os, dry_run):
-    properties = [
-        Element('property', {'name': 'polarion-project-id', 'value': project_id}),
-        Element('property', {'name': 'polarion-lookup-method', 'value': 'id'}),
-        Element('property', {'name': 'polarion-custom-plannedin', 'value': plannedin}),
-        Element(
-            'property',
-            {
-                'name': 'polarion-testrun-id',
-                'value': '_'.join([plannedin, tier, env_os, env_storage])
-            }
-        ),
-        Element('property', {'name': 'polarion-custom-isautomated', 'value': 'True'}),
-        Element('property', {'name': 'polarion-testrun-status-id', 'value': 'inprogress'}),
-        Element('property', {'name': 'polarion-custom-env-os', 'value': env_os}),
-        Element('property', {'name': 'polarion-custom-env-storage', 'value': env_storage}),
-        Element('property', {'name': 'polarion-dry-run', 'value': dry_run}),
-    ]
+def add_testsuites_properties(xml, data, keep_testcase_identifiers):
+    properties = [Element('property', {'name': x['name'], 'value': x['value']}) for x in data]
     testsuites_properties = etree.SubElement(xml.getroot(), 'properties')
     add_children(testsuites_properties, properties)
 
 
-def process_testcases(testcases):
-    regex = re.compile(r'ID\(CNV-\d+\)\s*')
+def process_testcases(testcases, project):
+    regex = re.compile(r'ID\({}-\d+\)\s*'.format(project))
     for testcase in testcases:
         found = regex.search(testcase.get('name'))
         if found:
@@ -57,43 +47,23 @@ def process_testcases(testcases):
 
 @click.command()
 @click.option('--report-path', help='path to the XML file with tests report', required=True)
-@click.option(
-    '--polarion-project',
-    help='Polarion project indentifier',
-    default='CNV',
-    show_default=True,
-)
-@click.option(
-    '--custom-plannedin',
-    help='planned in attribute used for polarion-custom-plannedin.',
-    default='2_3',
-    show_default=True
-)
-@click.option(
-    '--tier',
-    help='tier of the test run',
-    type=click.Choice(['tier1', 'tier2', 'tier3'], case_sensitive=False),
-    default='tier1',
-    show_default=True,
-)
-@click.option('--env-storage', help='storage class used for the test run', default='nfs', show_default=True)
-@click.option('--env-os', help='OS used on cluster nodes', default='RHCOS', show_default=True)
-@click.option(
-    '--dry-run',
-    help='use True for dry run, False by default',
-    type=click.Choice(['True', 'False'], case_sensitive=False),
-    default='False',
-    show_default=True,
-)
-def main(report_path, polarion_project, custom_plannedin, tier, env_storage, env_os, dry_run):
+@click.option('--config-file', help='path to configuration file', required=True)
+def main(report_path, config_file):
     xml = etree.parse(report_path)
+    with open(config_file) as fd:
+        data = yaml.load(fd, Loader=yaml.FullLoader)
+    check_config(data)
 
     # add test suite properties
-    add_testsuites_properties(xml, polarion_project, custom_plannedin, tier, env_storage, env_os, dry_run)
+    add_testsuites_properties(
+        xml,
+        data['testsuites_properties'] if 'testsuites_properties' in data else [],
+        data['keepTestCaseIdentifier'] if 'keepTestCaseIdentifier' in data else True,
+    )
 
     # add and process testcase properties
     testcases = xml.xpath("//testcase")
-    process_testcases(testcases)
+    process_testcases(testcases, data['project'])
 
     # write the result to a file
     basepath, filename = path.split(report_path)

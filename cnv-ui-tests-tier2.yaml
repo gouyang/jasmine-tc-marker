@@ -1,0 +1,21 @@
+project: 'CNV'
+keepTestCaseIdentifier: False
+testsuites_properties:
+  - name: polarion-project-id
+    value: 'CNV'
+  - name: polarion-lookup-method
+    value: 'id'
+  - name: polarion-custom-plannedin
+    value: '2_3'
+  - name: polarion-testrun-id
+    value: '2_3_tier2_rhcos'
+  - name: polarion-custom-isautomated
+    value: 'True'
+  - name: polarion-testrun-status-id
+    value: 'inprogres'
+  - name: polarion-custom-env-os
+    value: 'rhcos'
+  - name: polarion-custom-env-storage
+    value: 'nfs'
+  - name: polarion-dry-run
+    value: 'True'
