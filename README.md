@@ -60,4 +60,4 @@ Options:
 
 __Example__
 
-`python cli.py --report-path ./test-report.xml --custom-plannedin=2_3 --tier=tier1 --env-storage=nfs`
+`python cli.py --report-path ./test-report.xml --config-file ./cnv-ui-tests-tier2.yaml`
