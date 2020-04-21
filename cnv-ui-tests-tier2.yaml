@@ -18,4 +18,4 @@ testsuites_properties:
   - name: polarion-custom-env-storage
     value: 'nfs'
   - name: polarion-dry-run
-    value: 'True'
+    value: 'False'
