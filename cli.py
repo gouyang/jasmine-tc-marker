@@ -1,4 +1,5 @@
 from os import path
+import sys
 import re
 import yaml
 
@@ -54,10 +55,17 @@ def process_testcases(testcases, data):
 @click.option('--report-path', help='path to the XML file with tests report', required=True)
 @click.option('--config-file', help='path to configuration file', required=True)
 def main(report_path, config_file):
-    xml = etree.parse(report_path)
-    with open(config_file) as fd:
-        config = yaml.load(fd, Loader=yaml.FullLoader)
-    parse_config(config)
+    if path.exists(report_path):
+        xml = etree.parse(report_path)
+    else:
+        sys.exit('Failed to locate xml report file')
+
+    if path.exists(config_file):
+        with open(config_file) as fd:
+            config = yaml.load(fd, Loader=yaml.FullLoader)
+        parse_config(config)
+    else:
+        sys.exit('Failed to locate configuration file')
 
     # add test suite properties
     add_testsuites_properties(
