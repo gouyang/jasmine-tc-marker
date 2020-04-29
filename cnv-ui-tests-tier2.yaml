@@ -5,17 +5,17 @@ testsuites_properties:
     value: 'CNV'
   - name: polarion-lookup-method
     value: 'id'
-  - name: polarion-custom-plannedin
-    value: '2_3'
-  - name: polarion-testrun-id
-    value: '2_3_tier2_rhcos'
-  - name: polarion-custom-isautomated
-    value: 'True'
-  - name: polarion-testrun-status-id
-    value: 'inprogres'
   - name: polarion-custom-env-os
     value: 'rhcos'
-  - name: polarion-custom-env-storage
-    value: 'nfs'
+  - name: polarion-testrun-status-id
+    value: 'inprogres'
+  - name: polarion-custom-isautomated
+    value: 'True'
   - name: polarion-dry-run
     value: 'False'
+#  - name: polarion-custom-plannedin
+#    value: '2_3'
+#  - name: polarion-custom-env-storage
+#    value: 'nfs'
+#  - name: polarion-testrun-id
+#    value: '2_3_tier2_nfs'

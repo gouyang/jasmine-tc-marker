@@ -15,13 +15,19 @@ class Element:
         self.attributes = attributes
 
 
-def parse_config(config):
+def parse_params(config, extra_testsuites_poperties):
     # Raise Exception for required config data
     if 'project' not in config:
         raise Exception('project must be defined in config file')
     # Set defaults for optional config data
     if 'keepTestCaseIdentifier' not in config:
         config['keepTestCaseIdentifier'] = True
+
+    if extra_testsuites_poperties:
+        extra_properties = extra_testsuites_poperties.split(',')
+        for extra_property in extra_properties:
+            name, value = extra_property.split(':')
+            config['testsuites_properties'].append({'name': name, 'value': value})
 
 
 def add_children(parent, children):
@@ -56,7 +62,12 @@ def process_testcases(testcases, data):
 @click.command()
 @click.option('--report-path', help='path to the XML file with tests report', required=True)
 @click.option('--config-file', help='path to configuration file', required=True)
-def main(report_path, config_file):
+@click.option(
+    '--extra-testsuites-properties',
+    help='comma separated list of extra testsuites properties in <poperty-name>:<value> format',
+    required=False,
+)
+def main(report_path, config_file, extra_testsuites_properties):
     if path.exists(report_path):
         xml = etree.parse(report_path)
     else:
@@ -65,10 +76,10 @@ def main(report_path, config_file):
     if path.exists(config_file):
         with open(config_file) as fd:
             config = yaml.load(fd, Loader=yaml.FullLoader)
-        parse_config(config)
     else:
         sys.exit('Failed to locate configuration file')
 
+    parse_params(config, extra_testsuites_properties)
     # add test suite properties
     add_testsuites_properties(
         xml,
