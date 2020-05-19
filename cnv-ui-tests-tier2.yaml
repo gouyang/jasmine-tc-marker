@@ -8,7 +8,7 @@ testsuites_properties:
   - name: polarion-custom-env-os
     value: 'rhcos'
   - name: polarion-testrun-status-id
-    value: 'inprogres'
+    value: 'inprogress'
   - name: polarion-custom-isautomated
     value: 'True'
   - name: polarion-dry-run
