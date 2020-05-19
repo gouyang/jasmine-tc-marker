@@ -13,9 +13,4 @@ testsuites_properties:
     value: 'True'
   - name: polarion-dry-run
     value: 'False'
-#  - name: polarion-custom-plannedin
-#    value: '2_3'
-#  - name: polarion-custom-env-storage
-#    value: 'nfs'
-#  - name: polarion-testrun-id
-#    value: '2_3_tier2_nfs'
+
