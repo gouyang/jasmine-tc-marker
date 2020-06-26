@@ -5,8 +5,6 @@ testsuites_properties:
     value: 'CNV'
   - name: polarion-lookup-method
     value: 'id'
-  - name: polarion-custom-env_os
-    value: 'rhcos'
   - name: polarion-testrun-status-id
     value: 'inprogress'
   - name: polarion-custom-isautomated
